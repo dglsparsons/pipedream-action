@@ -1,11 +1,20 @@
 import * as core from "@actions/core";
+import * as github from "@actions/github";
 
 async function main(): Promise<void> {
+  // Authenticate with Pipedream, I guess
   const secret = core.getInput("secret", { required: true });
+  // Commits made with the default `GITHUB_TOKEN` won't trigger workflows.
+  // So we need to use a personal access token.
+  // See: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
   const githubToken = core.getInput("github-token", { required: true });
   const workflow = core.getInput("workflow", { required: true });
   const stabilityPeriodRaw = core.getInput("stabilityPeriodMinutes", { required: true });
   const wavesRaw = core.getInput("waves", { required: true });
+
+  const ref = github.context.ref;
+  const sha = github.context.sha;
+  const repo = github.context.repo
 
   const stabilityPeriodMinutes = parseInt(stabilityPeriodRaw, 10);
   if (isNaN(stabilityPeriodMinutes)) {
@@ -21,9 +30,12 @@ async function main(): Promise<void> {
     },
     body: JSON.stringify({
       githubToken,
-      workflow,
+      ref,
+      repo,
+      sha,
       stabilityPeriodMinutes: parseInt(stabilityPeriodRaw, 10),
       waves: parseInt(wavesRaw, 10),
+      workflow,
     }),
   });
 
