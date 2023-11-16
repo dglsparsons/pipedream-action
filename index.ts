@@ -15,6 +15,7 @@ async function main(): Promise<void> {
   const ref = github.context.ref;
   const sha = github.context.sha;
   const repo = github.context.repo
+  const commitMessage = github.context.payload.commits[0]?.message;
 
   const stabilityPeriodMinutes = parseInt(stabilityPeriod, 10);
   if (isNaN(stabilityPeriodMinutes)) {
@@ -37,6 +38,7 @@ async function main(): Promise<void> {
       stability_period_minutes: stabilityPeriod,
       waves,
       workflow,
+      commit_message: commitMessage,
     }),
   });
 
