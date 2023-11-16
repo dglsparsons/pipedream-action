@@ -13,8 +13,6 @@ jobs:
       - run: npm install -g pnpm
       - run: pnpm install
       - run: pnpm run build
-      - uses: aboutte/build-and-tag-action@v2
-        with:
-          additional_files: 'dist/post/index.js'
+      - uses: JasonEtco/build-and-tag-action@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
