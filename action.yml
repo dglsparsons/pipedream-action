@@ -14,7 +14,7 @@ inputs:
   stabilityPeriodMinutes:
     description: 'Amount of time to leave in between deployments, in minutes'
     required: true
-  environments:
+  waves:
     description: 'Comma separated, ordered list of environment identifiers to be deployed'
     required: true
 outputs:
