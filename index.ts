@@ -9,32 +9,33 @@ async function main(): Promise<void> {
   // See: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
   const githubToken = core.getInput("github-token", { required: true });
   const workflow = core.getInput("workflow", { required: true });
-  const stabilityPeriodRaw = core.getInput("stabilityPeriodMinutes", { required: true });
-  const wavesRaw = core.getInput("waves", { required: true });
+  const stabilityPeriod = core.getInput("stabilityPeriodMinutes", { required: true });
+  const waves = core.getInput("waves", { required: true });
 
   const ref = github.context.ref;
   const sha = github.context.sha;
   const repo = github.context.repo
 
-  const stabilityPeriodMinutes = parseInt(stabilityPeriodRaw, 10);
+  const stabilityPeriodMinutes = parseInt(stabilityPeriod, 10);
   if (isNaN(stabilityPeriodMinutes)) {
-    core.setFailed(`Invalid stabilityPeriodMinutes ${stabilityPeriodRaw}`);
+    core.setFailed(`Invalid stabilityPeriodMinutes ${stabilityPeriod}`);
     return
   }
 
-  const res = await fetch("TODO - some URL here", {
+  const res = await fetch("https://pipedream.fly.dev/api/workflow", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded",
       Authorization: `Bearer ${secret}`,
     },
-    body: JSON.stringify({
-      githubToken,
-      ref,
-      repo,
+    body: new URLSearchParams({
+      github_token: githubToken,
+      git_ref: ref,
+      owner: repo.owner,
+      repo: repo.repo,
       sha,
-      stabilityPeriodMinutes: parseInt(stabilityPeriodRaw, 10),
-      waves: parseInt(wavesRaw, 10),
+      stability_period_minutes: stabilityPeriod,
+      waves,
       workflow,
     }),
   });
