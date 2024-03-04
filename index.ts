@@ -4,19 +4,13 @@ import * as github from "@actions/github";
 async function main(): Promise<void> {
   // Authenticate with Pipedream, I guess
   const secret = core.getInput("secret", { required: true });
-  // Commits made with the default `GITHUB_TOKEN` won't trigger workflows.
-  // So we need to use a personal access token.
-  // See: https://docs.github.com/en/actions/security-guides/automatic-token-authentication#using-the-github_token-in-a-workflow
-  const githubToken = core.getInput("github-token", { required: true });
-  const workflow = core.getInput("workflow", { required: true });
   const stabilityPeriod = core.getInput("stabilityPeriodMinutes", { required: true });
-  const waves = core.getInput("waves", { required: true });
+  const environments = core.getInput("environments", { required: true });
 
-  const ref = github.context.ref;
-  const sha = github.context.sha;
-  const repo = github.context.repo
+  // Take the HEAD commit message, if it exists.
   const commitMessage = github.context.payload.commits[0]?.message;
 
+  // Parse the stability period, so we know it's a valid number before sending it to the API
   const stabilityPeriodMinutes = parseInt(stabilityPeriod, 10);
   if (isNaN(stabilityPeriodMinutes)) {
     core.setFailed(`Invalid stabilityPeriodMinutes ${stabilityPeriod}`);
@@ -31,14 +25,12 @@ async function main(): Promise<void> {
       Authorization: `Bearer ${secret}`,
     },
     body: new URLSearchParams({
-      github_token: githubToken,
-      git_ref: ref,
-      owner: repo.owner,
-      repo: repo.repo,
-      sha,
+      git_ref: github.context.ref,
+      environments,
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      sha: github.context.sha,
       stability_period_minutes: stabilityPeriod,
-      waves,
-      workflow,
       commit_message: commitMessage,
     }),
   });
