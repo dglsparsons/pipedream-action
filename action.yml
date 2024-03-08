@@ -5,16 +5,10 @@ inputs:
   secret:
     description: 'Pipedream secret'
     required: true
-  github-token:
-    description: 'Github Token to use for triggering workflows'
-    required: true
-  workflow:
-    description: 'Workflow file to trigger'
-    required: true
   stabilityPeriodMinutes:
     description: 'Amount of time to leave in between deployments, in minutes'
     required: true
-  waves:
+  environments:
     description: 'Comma separated, ordered list of environment identifiers to be deployed'
     required: true
 outputs:
