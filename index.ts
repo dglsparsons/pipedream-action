@@ -3,7 +3,6 @@ import * as github from "@actions/github";
 
 async function main(): Promise<void> {
   // Authenticate with Pipedream, I guess
-  const secret = core.getInput("secret", { required: true });
   const stabilityPeriod = core.getInput("stabilityPeriodMinutes", { required: true });
   const environments = core.getInput("environments", { required: true });
 
@@ -22,7 +21,6 @@ async function main(): Promise<void> {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "Accept": "application/json",
-      Authorization: `Bearer ${secret}`,
     },
     body: new URLSearchParams({
       git_ref: github.context.ref,
