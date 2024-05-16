@@ -16,11 +16,13 @@ async function main(): Promise<void> {
     return
   }
 
+  const token = await core.getIDToken();
   const res = await fetch("https://pipedream.fly.dev/api/workflow", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       "Accept": "application/json",
+      "Authorization": `Bearer ${token}`,
     },
     body: new URLSearchParams({
       git_ref: github.context.ref,
