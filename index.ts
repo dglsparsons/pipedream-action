@@ -17,7 +17,7 @@ async function main(): Promise<void> {
   }
 
   const token = await core.getIDToken();
-  const res = await fetch("https://pipedream.fly.dev/api/workflow", {
+  const res = await fetch("https://pipedream-ci.vercel.app/api/workflow", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
